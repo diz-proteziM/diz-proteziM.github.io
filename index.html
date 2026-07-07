@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diz Protezi-M: Ameliyat Sonrası Hasta Takip Mobil Uygulaması</title>
+  <meta name="description" content="Diz Protezi-M — diz protezi ameliyatı sonrası ağrı takibi, rehabilitasyon görevleri ve hatırlatmalar için hasta takip uygulaması. Adım adım Türkçe kurulum rehberi." />
+  <link rel="icon" href="assets/images/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#2bca6f',
+              greenDark: '#1fa557',
+              blue: '#2b8fca',
+              blueDark: '#1f6fa5',
+              soft: '#E6F4FE',
+            }
+          },
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    /* Erişilebilirlik için taban yazı boyutu büyük tutuldu */
+    body { font-size: 20px; }
+    .step-badge {
+      width: 3rem; height: 3rem;
+      min-width: 3rem;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 1.5rem;
+    }
+    .fade-in { animation: fade 0.4s ease-out; }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-brand-soft text-slate-800 antialiased">
+
+  <!-- ======================= ÜST BAŞLIK ======================= -->
+  <header class="bg-gradient-to-b from-brand-green to-brand-greenDark text-white px-5 pt-12 pb-14 text-center shadow-lg">
+    <div class="mx-auto max-w-2xl">
+      <img src="assets/images/icon.png" alt="Diz Protezi-M" class="mx-auto mb-6 h-24 w-24 rounded-3xl shadow-md bg-white/20 p-1" onerror="this.style.display='none'" />
+      <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight">
+        Diz Protezi-M
+      </h1>
+      <p class="mt-3 text-2xl sm:text-3xl font-semibold text-white/95">
+        Ameliyat Sonrası Hasta Takip Uygulaması
+      </p>
+      <span class="mt-5 inline-block bg-white/20 rounded-full px-5 py-2 text-xl font-bold">
+        Kolay Kurulum
+      </span>
+      <p class="mt-5 text-xl text-white/90 leading-relaxed">
+        Diz protezi ameliyatınızdan sonra iyileşme sürecinizi kolayca takip edin.<br />
+        Uygulamayı kurmak için aşağıdaki adımları izleyin. 🌿
+      </p>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-2xl px-5 -mt-8 pb-16">
+
+    <!-- ======================= OTOMATİK ALGILA ======================= -->
+    <section class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 text-center">
+      <button id="detectBtn"
+        class="w-full bg-brand-blue hover:bg-brand-blueDark active:scale-[0.98] transition text-white text-2xl sm:text-3xl font-bold py-6 px-4 rounded-2xl shadow-lg leading-snug">
+        📱 Telefon Modelimi<br class="sm:hidden" /> Otomatik Algıla
+      </button>
+
+      <p class="mt-5 text-lg text-slate-500">
+        Butona basın, telefonunuza uygun kurulum adımlarını gösterelim.
+      </p>
+
+      <!-- Algılama sonucu mesajı -->
+      <div id="detectResult" class="hidden mt-6 fade-in"></div>
+
+      <!-- Elle seçim linki -->
+      <button id="manualToggle" class="mt-6 text-brand-blueDark underline text-lg font-semibold">
+        Telefonumu elle seçmek istiyorum
+      </button>
+    </section>
+
+    <!-- ======================= MARKA SEÇİCİ ======================= -->
+    <section id="brandPicker" class="hidden mt-6 bg-white rounded-3xl shadow-xl p-6 sm:p-8 fade-in">
+      <h2 class="text-2xl font-bold text-center text-slate-700 mb-6">
+        Telefonunuzun markasını seçin
+      </h2>
+      <div class="grid grid-cols-1 gap-4">
+        <button data-brand="samsung"
+          class="brand-choice flex items-center gap-4 border-2 border-slate-200 hover:border-brand-green rounded-2xl p-5 text-left transition active:scale-[0.98]">
+          <span class="text-3xl">📱</span>
+          <span>
+            <span class="block text-2xl font-bold text-slate-800">Samsung</span>
+            <span class="block text-lg text-slate-500">Galaxy, A serisi, S serisi...</span>
+          </span>
+        </button>
+        <button data-brand="xiaomi"
+          class="brand-choice flex items-center gap-4 border-2 border-slate-200 hover:border-brand-green rounded-2xl p-5 text-left transition active:scale-[0.98]">
+          <span class="text-3xl">📲</span>
+          <span>
+            <span class="block text-2xl font-bold text-slate-800">Xiaomi / Redmi / POCO</span>
+            <span class="block text-lg text-slate-500">MIUI veya HyperOS</span>
+          </span>
+        </button>
+        <button data-brand="other"
+          class="brand-choice flex items-center gap-4 border-2 border-slate-200 hover:border-brand-green rounded-2xl p-5 text-left transition active:scale-[0.98]">
+          <span class="text-3xl">🤖</span>
+          <span>
+            <span class="block text-2xl font-bold text-slate-800">Diğer Android Telefonlar</span>
+            <span class="block text-lg text-slate-500">Oppo, Vivo, Huawei, Realme...</span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================= KURULUM ADIMLARI (SİHİRBAZ) ======================= -->
+    <section id="stepsSection" class="hidden mt-8 fade-in">
+      <div id="stepsBrandTitle" class="text-center mb-5"></div>
+
+      <!-- İlerleme çubuğu + sayaç -->
+      <div class="mb-5">
+        <div class="flex items-center justify-between mb-2">
+          <span id="stepCounter" class="text-xl font-extrabold text-slate-700">Adım 1 / 7</span>
+          <button id="viewToggle" class="text-brand-blueDark underline text-base font-semibold">
+            Tüm adımları tek sayfada göster
+          </button>
+        </div>
+        <div id="progressTrack" class="w-full bg-slate-200 rounded-full h-4 overflow-hidden">
+          <div id="progressBar" class="bg-brand-green h-4 rounded-full transition-all duration-300" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Tek adım (sihirbaz) -->
+      <div id="wizardView">
+        <div id="wizardCard" class="bg-white rounded-3xl shadow-xl p-6 sm:p-7"></div>
+        <div class="mt-5 grid grid-cols-2 gap-4">
+          <button id="prevBtn"
+            class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-2xl font-extrabold py-6 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed">
+            ◀ Geri
+          </button>
+          <button id="nextBtn"
+            class="bg-brand-blue hover:bg-brand-blueDark text-white text-2xl font-extrabold py-6 rounded-2xl active:scale-[0.98] transition">
+            İleri ▶
+          </button>
+        </div>
+        <p class="mt-4 text-center text-lg text-slate-500">
+          Acele etmeyin. Her adımı yaptıktan sonra <b>İleri</b>’ye dokunun.
+        </p>
+      </div>
+
+      <!-- Tüm adımlar (liste görünümü) -->
+      <ol id="stepsList" class="hidden space-y-5"></ol>
+    </section>
+
+    <!-- ======================= İNDİRME BUTONU ======================= -->
+    <section id="downloadSection" class="hidden mt-8 fade-in">
+      <a href="https://github.com/diz-proteziM/diz-proteziM.github.io/releases/download/2026-05-24/DizProtezim.apk"
+        class="block w-full bg-gradient-to-r from-brand-green to-brand-greenDark hover:brightness-105 active:scale-[0.98] transition text-white text-center text-3xl font-extrabold py-7 px-4 rounded-2xl shadow-xl">
+        ⬇️ Uygulamayı Şimdi Kur
+      </a>
+      <p class="mt-4 text-center text-lg text-slate-500">
+        Dosya indirilecek. İndirdikten sonra dosyaya dokunarak kurulumu başlatın.
+      </p>
+    </section>
+
+    <!-- Sabit alt indirme çubuğu (steps görününce aktif olur, JS ile) -->
+  </main>
+
+  <!-- ======================= ALT BİLGİ ======================= -->
+  <footer class="bg-white/60 border-t border-slate-200 py-8 px-5 text-center">
+    <p class="text-lg text-slate-500">
+      Diz Protezi-M · Ameliyat Sonrası Hasta Takip Uygulaması
+    </p>
+    <p class="mt-2 text-base text-slate-400">
+      Sorun yaşarsanız kurulumda size yardımcı olan kişiye bu sayfayı gösterin.
+    </p>
+  </footer>
+
+  <!-- ======================= JAVASCRIPT ======================= -->
+  <script>
+    // ---- APK indirme adresi (tek yerde) ----
+    const APK_URL = "https://github.com/diz-proteziM/diz-proteziM.github.io/releases/download/2026-05-24/DizProtezim.apk";
+
+    // ---- Adım görselleri: kendi kendine yeten SVG telefon mockup'ları ----
+    // (Harici resim/CDN yok — orijinal "minimum bağımlılık" kuralına uygun)
+    const SCREEN_ALT = {
+      download:  "Telefon ekranında yeşil İndir butonu",
+      openfile:  "İndirilenler klasöründe DizProtezim.apk dosyası",
+      warn:      "Yükleme izni uyarısı ve Ayarlar butonu",
+      toggle:    "Ayarlarda açık konumdaki izin anahtarı",
+      install:   "Uygulama yükleme ekranında Yükle butonu",
+      protect:   "Play Protect uyarısında Yine de yükle butonu",
+      timer:     "Kurulum öncesi geri sayım ekranı",
+      scan:      "Güvenlik taraması ekranı",
+      done:      "Kurulum tamam, Aç butonu",
+    };
+
+    const SCREENS = {
+      download: `
+        <text x="160" y="80" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">DizProtezim.apk</text>
+        <text x="160" y="104" text-anchor="middle" font-size="13" fill="#64748b">İndiriliyor… %60</text>
+        <rect x="52" y="118" width="216" height="14" rx="7" fill="#e2e8f0"/>
+        <rect x="52" y="118" width="130" height="14" rx="7" fill="#2b8fca"/>
+        <rect x="52" y="236" width="216" height="66" rx="16" fill="#2bca6f"/>
+        <text x="160" y="270" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">İndir</text>
+        <text x="160" y="292" text-anchor="middle" font-size="12" fill="#eafff2">buraya dokunun</text>
+        <text x="224" y="330" font-size="34">👆</text>`,
+      openfile: `
+        <text x="44" y="72" font-size="15" font-weight="700" fill="#0f172a">İndirilenler</text>
+        <line x1="44" y1="84" x2="276" y2="84" stroke="#e2e8f0" stroke-width="2"/>
+        <rect x="36" y="102" width="248" height="66" rx="14" fill="#dcfce7" stroke="#2bca6f" stroke-width="3"/>
+        <text x="58" y="146" font-size="28">📦</text>
+        <text x="98" y="132" font-size="15" font-weight="700" fill="#0f172a">DizProtezim.apk</text>
+        <text x="98" y="154" font-size="12" fill="#16a34a">Açmak için dokunun</text>
+        <text x="236" y="214" font-size="34">👆</text>`,
+      warn: `
+        <rect x="46" y="94" width="228" height="180" rx="18" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+        <text x="160" y="140" text-anchor="middle" font-size="34">🔒</text>
+        <text x="160" y="176" text-anchor="middle" font-size="13" fill="#475569">Bu kaynaktan yükleme</text>
+        <text x="160" y="196" text-anchor="middle" font-size="13" fill="#475569">izni kapalı</text>
+        <text x="88" y="248" font-size="14" fill="#94a3b8">İptal</text>
+        <rect x="150" y="226" width="108" height="36" rx="10" fill="#2b8fca"/>
+        <text x="204" y="250" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Ayarlar</text>
+        <text x="250" y="302" font-size="32">👆</text>`,
+      toggle: `
+        <rect x="36" y="148" width="248" height="82" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+        <text x="56" y="184" font-size="13" font-weight="700" fill="#0f172a">Bu kaynaktan</text>
+        <text x="56" y="204" font-size="13" font-weight="700" fill="#0f172a">yüklemeye izin ver</text>
+        <rect x="210" y="172" width="58" height="34" rx="17" fill="#2bca6f"/>
+        <circle cx="251" cy="189" r="14" fill="#ffffff"/>
+        <text x="150" y="256" text-anchor="middle" font-size="13" font-weight="700" fill="#16a34a">✓ Açık konuma getirin</text>
+        <text x="238" y="150" font-size="30">👆</text>`,
+      install: `
+        <circle cx="160" cy="108" r="38" fill="#e6f4fe" stroke="#2bca6f" stroke-width="2"/>
+        <text x="160" y="122" text-anchor="middle" font-size="34">🦵</text>
+        <text x="160" y="178" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Diz Protezi-M</text>
+        <rect x="60" y="238" width="200" height="62" rx="14" fill="#2bca6f"/>
+        <text x="160" y="277" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">Yükle</text>
+        <text x="224" y="324" font-size="32">👆</text>`,
+      protect: `
+        <rect x="42" y="86" width="236" height="200" rx="18" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+        <text x="160" y="134" text-anchor="middle" font-size="34">🛡️</text>
+        <text x="160" y="170" text-anchor="middle" font-size="13" fill="#475569">Bilinmeyen uygulama</text>
+        <text x="160" y="190" text-anchor="middle" font-size="12" fill="#94a3b8">(Play Protect uyarısı)</text>
+        <rect x="70" y="214" width="180" height="44" rx="12" fill="#2bca6f"/>
+        <text x="160" y="242" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">Yine de yükle</text>
+        <text x="236" y="300" font-size="30">👆</text>`,
+      timer: `
+        <circle cx="160" cy="126" r="48" fill="#e6f4fe" stroke="#2b8fca" stroke-width="5"/>
+        <text x="160" y="144" text-anchor="middle" font-size="42" font-weight="800" fill="#2b8fca">10</text>
+        <text x="160" y="212" text-anchor="middle" font-size="15" fill="#475569">saniye bekleyin…</text>
+        <rect x="70" y="240" width="180" height="52" rx="14" fill="#cbd5e1"/>
+        <text x="160" y="273" text-anchor="middle" font-size="15" font-weight="700" fill="#64748b">Yükle (bekleyin)</text>`,
+      scan: `
+        <circle cx="160" cy="126" r="46" fill="#e6f4fe"/>
+        <text x="160" y="142" text-anchor="middle" font-size="42">🔍</text>
+        <text x="160" y="208" text-anchor="middle" font-size="15" fill="#475569">Güvenlik taranıyor…</text>
+        <rect x="60" y="230" width="200" height="14" rx="7" fill="#e2e8f0"/>
+        <rect x="60" y="230" width="150" height="14" rx="7" fill="#2b8fca"/>
+        <text x="160" y="282" text-anchor="middle" font-size="12" fill="#94a3b8">Bitince “Yine de yükle”</text>`,
+      done: `
+        <circle cx="160" cy="120" r="48" fill="#dcfce7"/>
+        <text x="160" y="140" text-anchor="middle" font-size="52" font-weight="800" fill="#16a34a">✓</text>
+        <text x="160" y="200" text-anchor="middle" font-size="18" font-weight="800" fill="#16a34a">Kuruldu!</text>
+        <rect x="70" y="232" width="180" height="62" rx="14" fill="#2bca6f"/>
+        <text x="160" y="271" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">Aç</text>
+        <text x="228" y="320" font-size="30">👆</text>`,
+    };
+
+    function svgScreen(type) {
+      const inner = SCREENS[type] || '';
+      const alt = SCREEN_ALT[type] || 'Kurulum ekranı';
+      return `
+        <div class="mt-5 flex justify-center">
+          <svg viewBox="0 0 320 380" class="w-full max-w-[250px] h-auto" role="img" aria-label="${alt}" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="308" height="368" rx="36" fill="#0f172a"/>
+            <rect x="16" y="16" width="288" height="348" rx="26" fill="#f8fafc"/>
+            <rect x="128" y="26" width="64" height="9" rx="4.5" fill="#0f172a"/>
+            ${inner}
+          </svg>
+        </div>`;
+    }
+
+    // ---- Her marka için kurulum adımları ----
+    const STEPS = {
+      common_start: [
+        {
+          t: "Uygulamayı indirin",
+          d: "Aşağıdaki büyük yeşil <b>İndir</b> butonuna dokunun. Dosya (DizProtezim.apk) telefonunuza inecek.",
+          type: "download"
+        },
+        {
+          t: "İndirilen dosyayı açın",
+          d: "İndirme bitince ekranda beliren bildirime veya <b>“Aç / Dosyayı aç”</b> yazısına dokunun. Bulamazsanız telefonunuzdaki <b>Dosyalar</b> uygulamasında <b>İndirilenler</b> klasörüne bakın.",
+          type: "openfile"
+        },
+      ],
+      samsung: [
+        {
+          t: "İzin uyarısı çıkarsa",
+          d: "Samsung telefonlarda <b>“Bu kaynaktan uygulamalara izin verilmiyor”</b> uyarısı çıkabilir. Endişelenmeyin, bu normaldir. <b>Ayarlar</b> butonuna dokunun.",
+          type: "warn"
+        },
+        {
+          t: "Bu kaynağa izin verin",
+          d: "Açılan ekranda <b>“Bu kaynaktan yüklemeye izin ver”</b> anahtarını sağa kaydırarak <b>açık</b> hale getirin.",
+          type: "toggle"
+        },
+        {
+          t: "Geri dönün ve kurun",
+          d: "Geri tuşuna basın ve <b>“Yükle”</b> butonuna dokunun. Kurulum birkaç saniye sürer.",
+          type: "install"
+        },
+        {
+          t: "Play Protect uyarısı",
+          d: "<b>“Bilinmeyen uygulama”</b> uyarısı çıkarsa <b>“Yine de yükle”</b> seçeneğine dokunun. Uygulama güvenlidir.",
+          type: "protect"
+        },
+      ],
+      xiaomi: [
+        {
+          t: "MIUI / HyperOS izni",
+          d: "Xiaomi, Redmi ve POCO telefonlarda ekstra bir izin gerekir. <b>“Bilinmeyen kaynaklardan yüklemeye izin ver”</b> uyarısı çıkınca <b>Ayarlar</b>’a dokunun.",
+          type: "warn"
+        },
+        {
+          t: "İzni açın",
+          d: "Açılan listede <b>Tarayıcı</b> veya <b>Dosyalar</b> uygulamasının yanındaki anahtarı <b>açık</b> hale getirin.",
+          type: "toggle"
+        },
+        {
+          t: "“Yükle” butonuna basın",
+          d: "Geri dönüp <b>“Yükle”</b> butonuna dokunun. HyperOS’ta kurulum başlamadan önce <b>10 saniye</b> beklemeniz istenebilir — bekleyin.",
+          type: "timer"
+        },
+        {
+          t: "Güvenlik taraması",
+          d: "Xiaomi otomatik bir güvenlik taraması yapabilir. Bittikten sonra <b>“Yine de yükle”</b> veya <b>“Yükle”</b> seçeneğine dokunun.",
+          type: "scan"
+        },
+      ],
+      other: [
+        {
+          t: "İzin uyarısı çıkarsa",
+          d: "Telefonunuz <b>“Bu kaynaktan uygulama yüklenemiyor”</b> diyebilir. <b>Ayarlar</b> veya <b>İzin ver</b> butonuna dokunun.",
+          type: "warn"
+        },
+        {
+          t: "Bu kaynağa izin verin",
+          d: "Açılan ekranda <b>“Bu kaynaktan yüklemeye izin ver”</b> anahtarını <b>açık</b> hale getirin.",
+          type: "toggle"
+        },
+        {
+          t: "Kurulumu tamamlayın",
+          d: "Geri dönüp <b>“Yükle”</b> butonuna dokunun. Uyarı çıkarsa <b>“Yine de yükle”</b> seçin.",
+          type: "install"
+        },
+      ],
+      common_end: [
+        {
+          t: "Uygulamayı açın 🎉",
+          d: "Kurulum bitince <b>“Aç”</b> butonuna dokunun. Artık <b>Diz Protezi-M</b> uygulaması telefonunuzda hazır!",
+          type: "done"
+        },
+      ]
+    };
+
+    const BRAND_LABELS = {
+      samsung: { name: "Samsung", icon: "📱", note: "Samsung telefonunuz için özel adımlar" },
+      xiaomi:  { name: "Xiaomi / Redmi / POCO", icon: "📲", note: "MIUI / HyperOS için özel adımlar" },
+      other:   { name: "Android Telefon", icon: "🤖", note: "Telefonunuz için genel adımlar" },
+    };
+
+    // ---- Sihirbaz durumu ----
+    const wiz = { list: [], i: 0 };
+
+    // İndirme butonu (sadece 1. adımda kart içinde gösterilir)
+    const downloadInlineBtn = `
+      <a href="${APK_URL}"
+        class="mt-6 block w-full bg-gradient-to-r from-brand-green to-brand-greenDark hover:brightness-105 active:scale-[0.98] transition text-white text-center text-2xl font-extrabold py-5 rounded-2xl shadow-lg">
+        ⬇️ İndir
+      </a>`;
+
+    // ---- Tek adımı (sihirbaz kartı) çiz ----
+    function showStep(i) {
+      wiz.i = Math.max(0, Math.min(i, wiz.list.length - 1));
+      const s = wiz.list[wiz.i];
+      const n = wiz.list.length;
+      const last = wiz.i === n - 1;
+
+      document.getElementById('wizardCard').innerHTML = `
+        <div class="flex items-center gap-4">
+          <span class="step-badge bg-brand-green text-white">${wiz.i + 1}</span>
+          <h3 class="flex-1 text-2xl sm:text-3xl font-extrabold text-slate-800 leading-snug">${s.t}</h3>
+        </div>
+        ${svgScreen(s.type)}
+        <p class="mt-5 text-xl text-slate-700 leading-relaxed">${s.d}</p>
+        ${s.type === 'download' ? downloadInlineBtn : ''}`;
+
+      // İlerleme çubuğu + sayaç
+      document.getElementById('stepCounter').textContent = `Adım ${wiz.i + 1} / ${n}`;
+      document.getElementById('progressBar').style.width = `${((wiz.i + 1) / n) * 100}%`;
+
+      // Butonlar
+      const prev = document.getElementById('prevBtn');
+      const next = document.getElementById('nextBtn');
+      prev.disabled = wiz.i === 0;
+      if (last) {
+        next.textContent = 'Tamamlandı 🎉';
+        next.disabled = true;
+        next.classList.add('disabled:opacity-40');
+      } else {
+        next.textContent = 'İleri ▶';
+        next.disabled = false;
+      }
+    }
+
+    // ---- Tüm adımları liste olarak çiz ----
+    function renderStepList() {
+      document.getElementById('stepsList').innerHTML = wiz.list.map((s, i) => `
+        <li class="bg-white rounded-2xl shadow p-5 sm:p-6">
+          <div class="flex items-start gap-4">
+            <span class="step-badge bg-brand-green text-white">${i + 1}</span>
+            <div class="flex-1">
+              <h3 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">${s.t}</h3>
+              <p class="mt-2 text-lg text-slate-600 leading-relaxed">${s.d}</p>
+              ${svgScreen(s.type)}
+            </div>
+          </div>
+        </li>`).join('');
+    }
+
+    // ---- Adımları hazırla ve göster ----
+    function renderSteps(brand) {
+      wiz.list = [
+        ...STEPS.common_start,
+        ...STEPS[brand],
+        ...STEPS.common_end,
+      ];
+      wiz.i = 0;
+
+      const info = BRAND_LABELS[brand];
+      document.getElementById('stepsBrandTitle').innerHTML = `
+        <div class="inline-flex items-center gap-3 bg-white rounded-full px-6 py-3 shadow">
+          <span class="text-3xl">${info.icon}</span>
+          <span class="text-xl font-bold text-slate-700">${info.name}</span>
+        </div>
+        <p class="mt-3 text-lg text-slate-500">${info.note}</p>`;
+
+      showStep(0);
+      renderStepList();
+
+      document.getElementById('stepsSection').classList.remove('hidden');
+      document.getElementById('downloadSection').classList.remove('hidden');
+      document.getElementById('stepsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ---- Sihirbaz gezinme butonları ----
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      showStep(wiz.i - 1);
+      document.getElementById('stepsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      showStep(wiz.i + 1);
+      document.getElementById('stepsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ---- Görünüm değiştir: sihirbaz <-> tüm adımlar ----
+    document.getElementById('viewToggle').addEventListener('click', () => {
+      const wizardView = document.getElementById('wizardView');
+      const listView = document.getElementById('stepsList');
+      const toggle = document.getElementById('viewToggle');
+      const progress = document.getElementById('stepCounter');
+      const showingList = !listView.classList.contains('hidden');
+
+      const track = document.getElementById('progressTrack');
+      if (showingList) {
+        // Tekli adım görünümüne dön
+        listView.classList.add('hidden');
+        wizardView.classList.remove('hidden');
+        toggle.textContent = 'Tüm adımları tek sayfada göster';
+        progress.classList.remove('invisible');
+        track.classList.remove('invisible');
+        showStep(wiz.i);
+      } else {
+        // Liste görünümüne geç
+        wizardView.classList.add('hidden');
+        listView.classList.remove('hidden');
+        toggle.textContent = 'Tek tek göster (kolay mod)';
+        progress.classList.add('invisible');
+        track.classList.add('invisible');
+      }
+    });
+
+    // ---- Telefon markasını User-Agent'tan tahmin et ----
+    function detectBrand() {
+      const ua = (navigator.userAgent || "").toLowerCase();
+      if (/samsung|sm-|galaxy/.test(ua)) return "samsung";
+      if (/xiaomi|redmi|poco|miui|mi\s/.test(ua)) return "xiaomi";
+      if (/android/.test(ua)) return "other";
+      return null; // Android değil veya belirlenemedi
+    }
+
+    // ---- Buton olayları ----
+    document.getElementById('detectBtn').addEventListener('click', () => {
+      const brand = detectBrand();
+      const result = document.getElementById('detectResult');
+      result.classList.remove('hidden');
+
+      if (brand) {
+        const info = BRAND_LABELS[brand];
+        result.innerHTML = `
+          <div class="bg-green-50 border-2 border-brand-green rounded-2xl p-5">
+            <p class="text-xl font-bold text-brand-greenDark">
+              ${info.icon} Telefonunuz algılandı: ${info.name}
+            </p>
+            <p class="mt-2 text-lg text-slate-600">Size özel kurulum adımlarını aşağıda hazırladık.</p>
+          </div>`;
+        renderSteps(brand);
+      } else {
+        result.innerHTML = `
+          <div class="bg-amber-50 border-2 border-amber-400 rounded-2xl p-5">
+            <p class="text-xl font-bold text-amber-700">
+              🤔 Telefon modeliniz otomatik algılanamadı
+            </p>
+            <p class="mt-2 text-lg text-slate-600">Lütfen aşağıdan telefonunuzun markasını kendiniz seçin.</p>
+          </div>`;
+        document.getElementById('brandPicker').classList.remove('hidden');
+        document.getElementById('brandPicker').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    // Elle seçim aç/kapa
+    document.getElementById('manualToggle').addEventListener('click', () => {
+      const picker = document.getElementById('brandPicker');
+      picker.classList.remove('hidden');
+      picker.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // Marka seçimi
+    document.querySelectorAll('.brand-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        renderSteps(btn.dataset.brand);
+      });
+    });
+  </script>
+</body>
+</html>
