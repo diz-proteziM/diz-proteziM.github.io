@@ -90,6 +90,16 @@
       </button>
     </section>
 
+    <!-- ======================= WEB UYGULAMASI HIZLI ERİŞİM ======================= -->
+    <section class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 text-center mt-6">
+      <h2 class="text-2xl font-bold text-slate-700 mb-3">💻 Bilgisayar veya iPhone (iOS) mu kullanıyorsunuz?</h2>
+      <p class="text-lg text-slate-500 mb-5">Uygulamayı indirmeden doğrudan internet tarayıcınız üzerinden kullanabilirsiniz.</p>
+      <a href="./app/"
+        class="inline-block w-full sm:w-auto bg-brand-blue hover:bg-brand-blueDark text-white text-2xl font-extrabold py-5 px-8 rounded-2xl shadow-lg active:scale-[0.98] transition">
+        🌐 Uygulamayı Tarayıcıda Aç (Web Sürümü)
+      </a>
+    </section>
+
     <!-- ======================= MARKA SEÇİCİ ======================= -->
     <section id="brandPicker" class="hidden mt-6 bg-white rounded-3xl shadow-xl p-6 sm:p-8 fade-in">
       <h2 class="text-2xl font-bold text-center text-slate-700 mb-6">
@@ -505,6 +515,7 @@
     // ---- Telefon markasını User-Agent'tan tahmin et ----
     function detectBrand() {
       const ua = (navigator.userAgent || "").toLowerCase();
+      if (/iphone|ipad|ipod/.test(ua)) return "ios";
       if (/samsung|sm-|galaxy/.test(ua)) return "samsung";
       if (/xiaomi|redmi|poco|miui|mi\s/.test(ua)) return "xiaomi";
       if (/android/.test(ua)) return "other";
@@ -517,7 +528,23 @@
       const result = document.getElementById('detectResult');
       result.classList.remove('hidden');
 
-      if (brand) {
+      if (brand === "ios") {
+        result.innerHTML = `
+          <div class="bg-blue-50 border-2 border-brand-blue rounded-2xl p-5">
+            <p class="text-xl font-bold text-brand-blueDark">
+              🍏 iPhone (iOS) cihazı algılandı
+            </p>
+            <p class="mt-2 text-lg text-slate-600">
+              iPhone cihazlarda dışarıdan uygulama yükleme (APK) desteklenmemektedir. 
+              Uygulamayı doğrudan internet tarayıcınız üzerinden kullanabilirsiniz.
+            </p>
+            <a href="./app/" class="mt-4 inline-block bg-brand-blue hover:bg-brand-blueDark text-white text-xl font-bold py-4 px-6 rounded-xl shadow transition">
+              🌐 Uygulamayı Tarayıcıda Aç (Web Sürümü)
+            </a>
+          </div>`;
+        document.getElementById('stepsSection').classList.add('hidden');
+        document.getElementById('downloadSection').classList.add('hidden');
+      } else if (brand) {
         const info = BRAND_LABELS[brand];
         result.innerHTML = `
           <div class="bg-green-50 border-2 border-brand-green rounded-2xl p-5">
